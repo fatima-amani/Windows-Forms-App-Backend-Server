@@ -37,6 +37,19 @@ app.get('/read', (req: Request, res: Response) => {
     }
 });
 
+app.delete('/del', (req: Request, res: Response) => {
+    const index = parseInt(req.query.index as string, 10);
+    const submissions = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
+
+    if (index >= 0 && index < submissions.length) {
+        submissions.splice(index, 1);
+        fs.writeFileSync(dbPath, JSON.stringify(submissions, null, 2));
+        res.json({ success: true, message: 'Submission deleted successfully' });
+    } else {
+        res.status(404).json({ error: 'Submission not found' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
